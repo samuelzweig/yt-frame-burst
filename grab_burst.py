@@ -129,6 +129,7 @@ def download_video(url: str) -> Path:
     """
     Try best *video-only* first (fastest for stills). If that fails (e.g., HTTP 416),
     fall back to merged best video+audio. Adds a few retry niceties.
+    Prints the yt-dlp command with the URL redacted to avoid leaking sensitive info.
     """
     out_tmpl = "video.%(ext)s"
 
@@ -141,14 +142,17 @@ def download_video(url: str) -> Path:
             "--no-part",
             "-o", out_tmpl,
         ] + args + [url]
-        print("Running:", " ".join(cmd))
+        # Redact the URL in logs
+        safe_cmd = cmd.copy()
+        safe_cmd[-1] = "<URL_REDACTED>"
+        print("Running:", " ".join(safe_cmd))
         return run(cmd, check=True)
 
     # 1) Try best video-only
     try:
         print("Downloading highest-quality *video-only* stream…")
         _run_download(["-f", "bestvideo"])
-    except subprocess.CalledProcessError as e:
+    except subprocess.CalledProcessError:
         print("Video-only failed; falling back to merged best video+audio …")
         # 2) Fallback: merged bestvideo+bestaudio (most reliable)
         # Force mp4 container for ffmpeg friendliness
@@ -160,6 +164,7 @@ def download_video(url: str) -> Path:
         raise SystemExit("Download succeeded but no output file was found.")
     print(f"Downloaded to: {candidates[0].resolve()}")
     return candidates[0]
+
 def grab_frame(input_file: Path, ts: str, out_file: Path):
     # -ss AFTER -i for accurate frame seek
     cmd = [
