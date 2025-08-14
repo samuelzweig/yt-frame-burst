@@ -1,0 +1,50 @@
+# -----------------
+# Python
+# -----------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dll
+*.dylib
+
+# -----------------
+# macOS metadata
+# -----------------
+.DS_Store
+
+# -----------------
+# Editor settings
+# -----------------
+.vscode/
+.idea/
+
+# -----------------
+# yt-dlp / ffmpeg outputs
+# -----------------
+video.*
+*.webm
+*.mp4
+*.mkv
+*.mov
+*.m4v
+
+# -----------------
+# Extracted frames
+# -----------------
+*.png
+*.jpg
+frames_*/
+
+# -----------------
+# yt-dlp cache
+# -----------------
+yt-dlp.cache/
+.cache/
